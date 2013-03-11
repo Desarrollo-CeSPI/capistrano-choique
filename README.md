@@ -22,6 +22,7 @@ Una vez instalada la gema, en el directorio local de trabajo, correr:
 
     $ capify-choique .
 
+
 ## Configurar
 
 Analizar la configuracion config/deploy.rb
