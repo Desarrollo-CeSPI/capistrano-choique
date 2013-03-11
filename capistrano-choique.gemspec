@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = Capistrano::Choique::VERSION
   gem.authors       = ["Christian Rodriguez"]
   gem.email         = ["car@cespi.unlp.edu.ar"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.description   = %q{Capistrano extension to deploy choique cms}
+  gem.summary       = %q{capify choique CMS}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($/)
