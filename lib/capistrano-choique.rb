@@ -8,6 +8,20 @@ module Capistrano
         load_paths.push File.expand_path('../', __FILE__)
         Dir.glob(File.join(File.dirname(__FILE__), '/capistrano-choique/recipes/*.rb')).sort.each { |f| load f }
 
+        set :repository,  "https://github.com/Desarrollo-CeSPI/choique.git"
+        set :scm,         :git
+
+        set :choique_tag, nil
+
+        set :branch do
+          default_tag = `git tag`.split("\n").last
+
+          tag = Capistrano::CLI.ui.ask "Tag to deploy (make sure to push the tag first): [#{default_tag}] "
+          tag = default_tag if tag.empty?
+          set :choique_tag, tag
+          tag
+        end
+
         set :php_bin,     "php"
 
         set :db_type, "mysql"
@@ -28,7 +42,7 @@ module Capistrano
         set :choique_testing, false
 
         set :shared_children, %w(log web-frontend/uploads flavors)
-        set :shared_files, %w(apps/backend/config/factories.yml config/databases.yml config/propel.ini config/app.yml)
+        set :shared_files, %w(apps/backend/config/factories.yml config/databases.yml config/propel.ini config/app.yml config/choique.yml)
         set :asset_children,    %w(web-frontend/css web-frontend/images web-frontend/js web-backend/css web-backend/images web-backend/js)
 
         # helper function
@@ -121,6 +135,12 @@ module Capistrano
           put app_conf, "#{shared_path}/config/app.yml"
           put factories_conf, "#{shared_path}/apps/backend/config/factories.yml"
           run "#{try_sudo} mkdir -p #{remote_tmp_dir}"
+        end
+
+        after "deploy:create_symlink" do
+          deploy_date = Time.now.strftime('%F')
+          build_version = "#{deploy_date} #{choique_tag} build+#{current_revision}"
+          put(build_version,"#{current_release}/VERSION")
         end
 
       end
