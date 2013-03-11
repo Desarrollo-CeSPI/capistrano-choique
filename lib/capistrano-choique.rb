@@ -13,6 +13,8 @@ module Capistrano
         set :db_type, "mysql"
         set :db_host, "localhost"
         set :db_port, "3306"
+        set(:db_name) { application }
+        set(:db_user) { application }
 
         set :symfony_env_prod, :prod
         set :symfony_env_local, :dev
