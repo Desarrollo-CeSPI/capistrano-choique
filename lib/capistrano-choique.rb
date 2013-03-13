@@ -1,4 +1,5 @@
 require 'capistrano'
+require 'capistrano-choique/version'
 
 
 module Capistrano

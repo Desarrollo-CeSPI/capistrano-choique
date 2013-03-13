@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'capistrano'
+require 'capistrano-choique'
 require 'optparse'
 require 'fileutils'
 
