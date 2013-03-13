@@ -9,18 +9,14 @@ module Capistrano
         Dir.glob(File.join(File.dirname(__FILE__), '/capistrano-choique/recipes/*.rb')).sort.each { |f| load f }
 
         set :repository,  "https://github.com/Desarrollo-CeSPI/choique.git"
+        set :deploy_via,  :remote_cache
         set :scm,         :git
 
         set :choique_tag, nil
 
-        set :branch do
-          default_tag = `git tag`.split("\n").last
+        set :branch, fetch(:branch, "master")
 
-          tag = Capistrano::CLI.ui.ask "Tag to deploy (make sure to push the tag first): [#{default_tag}] "
-          tag = default_tag if tag.empty?
-          set :choique_tag, tag
-          tag
-        end
+        set(:user) { application }
 
         set :php_bin,     "php"
 
