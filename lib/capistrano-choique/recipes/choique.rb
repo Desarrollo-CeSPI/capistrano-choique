@@ -73,6 +73,16 @@ namespace :choique do
       end
       run "#{try_sudo} rm #{file}"
     end
+
+    desc "Fix flavor after deploy"
+    task :fix_flavor do
+      choique_config = {}
+      run "#{try_sudo} cat #{current_dir}/config/choique.yml" do |ch, st, data|
+       choique_config = YAML::load(data)
+      end
+      current = choique_config['choique']['flavors']['current']
+      stream "cd #{latest_release} && #{php_bin} ./symfony choique-flavor-select #{current}"
+    end
   end
 
 end
