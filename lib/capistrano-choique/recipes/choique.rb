@@ -77,7 +77,7 @@ namespace :choique do
     desc "Fix flavor after deploy"
     task :fix_flavor do
       choique_config = {}
-      run "#{try_sudo} cat #{current_dir}/config/choique.yml" do |ch, st, data|
+      run "#{try_sudo} cat #{shared_path}/config/choique.yml" do |ch, st, data|
        choique_config = YAML::load(data)
       end
       current = choique_config['choique']['flavors']['current']
