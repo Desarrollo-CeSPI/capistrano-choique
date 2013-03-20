@@ -126,11 +126,8 @@ module Capistrano
           choique.flavors.init if choique.flavors_initialize?
           choique.build_model
           choique.fix_permissions
-          if choique.need_init?
-            choique.data_init 
-          else
-            choique.flavors.fix_flavor
-          end
+          choique.data_init if choique.need_init?
+          choique.flavors.fix_flavor unless choique.flavors_initialize?
           choique.cc
         end
 
