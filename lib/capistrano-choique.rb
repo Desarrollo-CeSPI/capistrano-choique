@@ -13,9 +13,19 @@ module Capistrano
         set :deploy_via,  :remote_cache
         set :scm,         :git
 
-        set :choique_tag, nil
+        set(:choique_tag) { branch }
 
-        set :branch, fetch(:branch, "master")
+        set :branch do
+          default_tag = /tags\/([\w.\d]+).*?$/.match(`git ls-remote -t #{repository}`.split("\n").last) 
+          default_tag = if default_tag 
+                          default_tag[1]  
+                        else
+                          "master"
+                        end
+          tag = Capistrano::CLI.ui.ask "Tag to deploy (Press enter when done): [#{default_tag}]"
+          tag = default_tag if tag.empty?
+          tag
+        end
 
         set(:user) { application }
 
