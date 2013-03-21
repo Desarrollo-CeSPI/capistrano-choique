@@ -74,6 +74,31 @@ namespace :choique do
       run "#{try_sudo} rm #{file}"
     end
 
+    desc "Download flavors folder and install it locally"
+    task :to_local do
+      choique_config = {}
+      run "#{try_sudo} cat #{current_dir}/config/choique.yml" do |ch, st, data|
+       choique_config = YAML::load(data)
+      end
+      run_locally("rm -fr flavors/*")
+      current = choique_config['choique']['flavors']['current']
+      download("#{shared_path}/flavors", ".", :via => :scp, :recursive => true)
+      run_locally("php symfony choique-flavor-select #{current}")
+    end
+
+    desc "Upload flavors folder and install it remotelly"
+    task :to_remote do
+      choique_config = {}
+      run "#{try_sudo} cat #{current_dir}/config/choique.yml" do |ch, st, data|
+       choique_config = YAML::load(data)
+      end
+      current = choique_config['choique']['flavors']['current']
+      run "#{try_sudo} rm -fr #{shared_path}/flavors/*"
+      upload("flavors", "#{shared_path}", :via => :scp, :recursive => true)
+      stream "cd #{latest_release} && #{php_bin} ./symfony choique-flavor-select #{current}"
+    end
+
+
     desc "Fix flavor after deploy"
     task :fix_flavor do
       choique_config = {}
