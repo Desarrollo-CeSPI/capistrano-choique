@@ -46,6 +46,28 @@ namespace :choique do
     stream "cd #{latest_release} && #{php_bin} ./symfony cc"
   end
 
+  namespace :user do
+
+    desc "Create/Update user"
+    task :update_or_create_admin do
+      username = Capistrano::CLI.ui.ask "Enter username:"
+      password = Capistrano::CLI.password_prompt 
+      stream "cd #{latest_release} && #{php_bin} ./symfony choique-user-update-or-create-admin '#{username}' '#{password}'"
+    end
+
+    desc "Enable user"
+    task :enable do
+      username = Capistrano::CLI.ui.ask "Enter username:"
+      stream "cd #{latest_release} && #{php_bin} ./symfony choique-user-enable '#{username}'"
+    end
+
+    desc "Disable user"
+    task :disable do
+      username = Capistrano::CLI.ui.ask "Enter username:"
+      stream "cd #{latest_release} && #{php_bin} ./symfony choique-user-disable '#{username}'"
+    end
+  end
+
   namespace :flavors do
 
     desc "Set default flavor"
