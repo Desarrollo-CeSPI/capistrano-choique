@@ -48,7 +48,7 @@ module Capistrano
         set(:choique_backend_url) { "https://#{domain}:#{choique_backend_port}/" }
         set :choique_testing, false
 
-        set :shared_children, %w(log web-frontend/uploads flavors)
+        set :shared_children, %w(log web-frontend/uploads flavors data/index)
         set :shared_files, %w(apps/backend/config/factories.yml config/databases.yml config/propel.ini config/app.yml config/choique.yml)
         set :asset_children,    %w(web-frontend/css web-frontend/images web-frontend/js web-backend/css web-backend/images web-backend/js)
 

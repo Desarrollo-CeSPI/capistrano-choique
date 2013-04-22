@@ -46,6 +46,45 @@ namespace :choique do
     stream "cd #{latest_release} && #{php_bin} ./symfony cc"
   end
 
+  desc "Package current version of choique including dump and download"
+  task :package do
+    name = "choique-#{Time.now.strftime('%F')}"
+    run "cat #{current_release}/VERSION" do |ch, st, data|
+      name += "-" + data.gsub(/ build.*/,'').gsub(/^\d{4}-\d{2}-\d{2} (v[\w.-_]+)/,'\1')
+    end
+    run "test -d #{remote_tmp_dir}/#{name} && rm -fr #{remote_tmp_dir}/#{name}; true"
+    run "mkdir #{remote_tmp_dir}/#{name}"
+    run "cd #{latest_release}; tar cf - * | (cd #{remote_tmp_dir}/#{name}; tar xfp -)"
+    dereference = (shared_children + shared_files).join(' ')
+    run "cd #{latest_release}; tar cf - #{dereference} -h | (cd #{remote_tmp_dir}/#{name}; tar xfp -)"
+    run "rm #{remote_tmp_dir}/#{name}/config/databases.yml #{remote_tmp_dir}/#{name}/config/propel.ini"
+
+    # Dump database
+    file = "#{remote_tmp_dir}/#{name}/dump-#{name}.sql"
+    config = ""
+    run "#{try_sudo} cat #{shared_path}/config/databases.yml" do |ch, st, data|
+      config = load_database_config data, symfony_env_prod
+    end  
+    sql_dump_cmd = generate_sql_command('dump', config)
+    logger.debug sql_dump_cmd.gsub(/(--password=)([^ ]+)/, '\1\'********\'')    # Log the command with a masked password
+    saved_log_level = logger.level
+    logger.level = Capistrano::Logger::IMPORTANT    # Change log level so that the real command (containing a plaintext password) is not displayed
+    try_sudo "#{sql_dump_cmd} | gzip -c > #{file}"
+    logger.level = saved_log_level
+    
+    # Package and transfer
+    run "cd #{remote_tmp_dir}/; tar cfz #{name}.tgz #{name}"
+    require "fileutils"
+    FileUtils.mkdir_p("backups")
+    get "#{remote_tmp_dir}/#{name}.tgz", "backups/#{name}.tgz"
+    begin
+      FileUtils.ln_sf("#{name}.tgz", "backups/package-latest.tgz")
+    rescue Exception # fallback for file systems that don't support symlinks
+      FileUtils.cp_r("#{name}.tgz", "backups/package-latest.tgz")
+    end  
+    run "rm -fr #{remote_tmp_dir}/#{name}.tgz #{remote_tmp_dir}/#{name}"
+  end
+
   namespace :user do
 
     desc "Create/Update user"
