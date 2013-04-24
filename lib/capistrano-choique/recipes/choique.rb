@@ -58,6 +58,8 @@ namespace :choique do
     dereference = (shared_children + shared_files).join(' ')
     run "cd #{latest_release}; tar cf - #{dereference} -h | (cd #{remote_tmp_dir}/#{name}; tar xfp -)"
     run "rm #{remote_tmp_dir}/#{name}/config/databases.yml #{remote_tmp_dir}/#{name}/config/propel.ini"
+    run "rm -fr #{remote_tmp_dir}/#{name}/cache/*;"
+    run "rm -fr #{remote_tmp_dir}/#{name}/log/*;"    
 
     # Dump database
     file = "#{remote_tmp_dir}/#{name}/dump-#{name}.sql"
