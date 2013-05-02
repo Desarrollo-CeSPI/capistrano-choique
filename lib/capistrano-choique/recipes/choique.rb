@@ -87,6 +87,24 @@ namespace :choique do
     run "rm -fr #{remote_tmp_dir}/#{name}.tgz #{remote_tmp_dir}/#{name}"
   end
 
+  namespace :app do
+
+    desc "Disable a aplication"
+    task :disable do
+      app_name = Capistrano::CLI.ui.ask "Enter application name (frontend|backend):"
+      env_name = Capistrano::CLI.ui.ask "Enter enviroment name (prod|dev):"
+      stream "cd #{latest_release} && #{php_bin} ./symfony disable '#{app_name}' '#{env_name}'"
+    end
+
+    desc "Enable a aplication"
+    task :enable do
+      app_name = Capistrano::CLI.ui.ask "Enter application name (frontend|backend):"
+      env_name = Capistrano::CLI.ui.ask "Enter enviroment name (prod|dev):"
+      stream "cd #{latest_release} && #{php_bin} ./symfony enable '#{app_name}' '#{env_name}'"
+    end
+
+  end
+
   namespace :user do
 
     desc "Create/Update user"
