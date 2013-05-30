@@ -8,9 +8,9 @@ Gem::Specification.new do |gem|
   gem.version       = Capistrano::Choique::VERSION
   gem.authors       = ["Christian Rodriguez"]
   gem.email         = ["car@cespi.unlp.edu.ar"]
-  gem.description   = %q{Capistrano extension to deploy choique cms}
-  gem.summary       = %q{capify choique CMS}
-  gem.homepage      = ""
+  gem.description   = %q{Capistrano extension to deploy Choique CMS}
+  gem.summary       = %q{Capify Choique CMS}
+  gem.homepage      = "https://github.com/Desarrollo-CeSPI/capistrano-choique"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
