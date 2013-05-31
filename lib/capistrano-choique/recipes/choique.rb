@@ -137,7 +137,7 @@ namespace :choique do
     desc "Download current flavor"
     task :download_current do
       choique_config = {}
-      run "#{try_sudo} cat #{current_dir}/config/choique.yml" do |ch, st, data|
+      run "#{try_sudo} cat #{current_path}/config/choique.yml" do |ch, st, data|
        choique_config = YAML::load(data)
       end
       current = choique_config['choique']['flavors']['current']
@@ -158,7 +158,7 @@ namespace :choique do
     desc "Download flavors folder and install it locally"
     task :to_local do
       choique_config = {}
-      run "#{try_sudo} cat #{current_dir}/config/choique.yml" do |ch, st, data|
+      run "#{try_sudo} cat #{current_path}/config/choique.yml" do |ch, st, data|
        choique_config = YAML::load(data)
       end
       run_locally("rm -fr flavors/*")
@@ -170,7 +170,7 @@ namespace :choique do
     desc "Upload flavors folder and install it remotelly"
     task :to_remote do
       choique_config = {}
-      run "#{try_sudo} cat #{current_dir}/config/choique.yml" do |ch, st, data|
+      run "#{try_sudo} cat #{current_path}/config/choique.yml" do |ch, st, data|
        choique_config = YAML::load(data)
       end
       current = choique_config['choique']['flavors']['current']
